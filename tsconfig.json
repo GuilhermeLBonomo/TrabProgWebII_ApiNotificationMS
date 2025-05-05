@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "commonjs",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "scripts": {
+    "start:dev": "ts-node-dev --respawn --transpile-only --project tsconfig.json src/index.ts"
+  },
+  "include": ["src/**/*.ts"]
+}
