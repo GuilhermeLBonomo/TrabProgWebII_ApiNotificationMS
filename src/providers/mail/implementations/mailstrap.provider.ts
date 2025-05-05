@@ -8,25 +8,40 @@ require("dotenv").config();
 export class MailTrap implements IMailAccess {
   private readonly transporter: Mail;
 
-  /**
-   * Constructor to initialize the transporter with configuration.
-   */
   constructor() {
+    const requiredEnv = [
+      "MAILTRAP_HOST",
+      "MAILTRAP_PORT",
+      "MAILTRAP_USER",
+      "MAILTRAP_PASSWORD",
+    ];
+    const missing = requiredEnv.filter((key) => !process.env[key]);
+
+    if (missing.length > 0) {
+      throw new Error(
+        `Missing required environment variables: ${missing.join(", ")}`
+      );
+    }
+
     const transportOptions: SMTPTransport.Options = {
-      host: process.env.MAILTRAP_HOST,
-      port: Number(process.env.MAILTRAP_PORT),
+      host: process.env.MAILTRAP_HOST!,
+      port: Number(process.env.MAILTRAP_PORT!),
       auth: {
         user: process.env.MAILTRAP_USER!,
-        pass: process.env.MAILTRAP_PASS!,
+        pass: process.env.MAILTRAP_PASSWORD,
+      },
+      secure: false,
+      tls: {
+        rejectUnauthorized: false,
       },
     };
+
     this.transporter = nodemailer.createTransport(transportOptions);
   }
 
   /**
    * Sends an email using the transporter.
-   * @param mail The mail message to be sent, which includes the recipient, sender, subject, and body.
-   * @throws Error if there is an issue with sending the email.
+   * @param mail The mail message to be sent.
    */
   async send(mail: IMessageMail): Promise<void> {
     try {
@@ -42,9 +57,9 @@ export class MailTrap implements IMailAccess {
         subject: mail.subject,
         html: mail.body,
       });
-      console.log(`Email sent successfully to ${mail.to.email}`);
+      console.log(`Email enviado para ${mail.to.email}`);
     } catch (error: any) {
-      console.error(`Failed to send email to ${mail.to.email}`, error);
+      console.error(`Erro ao enviar email para ${mail.to.email}`, error);
       throw new Error("Failed to send email");
     }
   }
