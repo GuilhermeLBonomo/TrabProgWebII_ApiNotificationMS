@@ -1,5 +1,8 @@
 import { IMailAccess } from "../../providers/mail/imail-access.interface";
 import { ISendMailNewUserDTO } from "./isend-mail-new-user-dto";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export class SendMailNewUserApplication {
   constructor(private readonly mailAccess: IMailAccess) {}
@@ -15,8 +18,8 @@ export class SendMailNewUserApplication {
         name: mailReq.name,
       },
       from: {
-        email: "swm@swm.com",
-        name: "SWM Tecnologia",
+        email: process.env.MAIL_USER ?? "swm@swm.com",
+        name: process.env.MAIL_NAME ?? "SWM Tecnologia",
       },
       subject: `Seja bem vindo(a) ${mailReq.name}`,
       body: `<p>Seja bem vindo(a) ${mailReq.name}</p>`,

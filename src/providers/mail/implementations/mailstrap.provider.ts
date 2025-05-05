@@ -1,19 +1,24 @@
 import { IMailAccess, IMessageMail } from "../imail-access.interface";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
+
+require("dotenv").config();
 
 export class MailTrap implements IMailAccess {
-  private transporter: Mail;
+  private readonly transporter: Mail;
 
   constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: "",
-      port: 0,
+    const transportOptions: SMTPTransport.Options = {
+      host: process.env.MAILTRAP_HOST,
+      port: Number(process.env.MAILTRAP_PORT),
       auth: {
-        user: "",
-        pass: "",
+        user: process.env.MAILTRAP_USER!,
+        pass: process.env.MAILTRAP_PASS!,
       },
-    });
+    };
+
+    this.transporter = nodemailer.createTransport(transportOptions);
   }
 
   /**
